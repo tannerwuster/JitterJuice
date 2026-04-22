@@ -10,7 +10,7 @@ macOS menu bar app: **nudge the cursor on a timer** and optionally **keep the di
 
 ### Main menu
 
-![JitterJuice main menu](Artwork/README/main-menu.png)
+![JitterJuice main menu](Artwork/README/readme-main-menu.png)
 
 - **Jiggle Mouse** nudges the cursor on an interval you choose. That tiny movement is often enough to keep chat and other apps from treating you as “away” or idle when you’re still at the desk—without babysitting the window.
 - **Wakey Wakey** asks macOS to keep the **display** from sleeping (a “caffeinated” display), with optional auto-stop and a daily time window. It’s separate from Jiggle Mouse; use either or both.
@@ -19,7 +19,7 @@ Open **Settings** (gear) for idle-only jiggle, nudge distance, menu bar icon sty
 
 ### Themes (Settings → Appearance)
 
-![JitterJuice settings and Juice themes](Artwork/README/settings-themes.png)
+![JitterJuice settings and Juice themes](Artwork/README/readme-settings-appearance.png)
 
 **Juice** themes reskin the retro menu and menu bar art so you can match your vibe—classic Jitter purple, Dracula, Moon, Deadly, Apple system style, Donny, Treehugger, Pride, Hail Storm (pixel rain), or your own colors under **Custom Juice**.
 
@@ -101,5 +101,5 @@ Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`).
 | <img src="Artwork/MenuBar/hailstormjuiceicon.png" width="40" alt="Hail Storm Juice" /> | `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
 | <img src="Artwork/MenuBar/jitterjuiceicon.png" width="40" alt="App icon" /> | `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
 | <img src="Artwork/MenuBar/jitterjuicelogo.png" width="120" alt="JitterJuice logo art" /> | `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
-| <img src="Artwork/README/main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/main-menu.png` | README screenshot (main menu, menu bar cropped) |
-| <img src="Artwork/README/settings-themes.png" width="100" alt="Settings themes screenshot" /> | `Artwork/README/settings-themes.png` | README screenshot (settings & themes) |
+| <img src="Artwork/README/readme-main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/readme-main-menu.png` | README screenshot (main menu, menu bar cropped, transparent mat) |
+| <img src="Artwork/README/readme-settings-appearance.png" width="100" alt="Settings themes screenshot" /> | `Artwork/README/readme-settings-appearance.png` | README screenshot (settings & themes, transparent mat) |

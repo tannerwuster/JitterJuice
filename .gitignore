@@ -3,3 +3,6 @@ dist/
 .derivedData/
 xcuserdata/
 *.xcuserstate
+
+# Accidental browser “Save Page” exports — never commit
+Artwork/README/settingsimage_files/
