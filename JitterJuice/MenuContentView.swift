@@ -260,8 +260,9 @@ struct MenuContentView: View {
 
             Divider()
 
-            HStack {
-                Spacer()
+            HStack(alignment: .center) {
+                AttributionsFooterLink(model: model)
+                Spacer(minLength: 8)
                 Button("Done") {
                     showSettings = false
                 }
@@ -849,8 +850,9 @@ struct MenuContentView: View {
 
             themedDivider(palette: palette)
 
-            HStack {
-                Spacer()
+            HStack(alignment: .center) {
+                AttributionsFooterLink(model: model)
+                Spacer(minLength: 8)
                 Button("Done") {
                     showSettings = false
                 }
@@ -1222,6 +1224,228 @@ private struct ThemedRadioDot: View {
             }
         }
         .accessibilityLabel(filled ? "Selected" : "Not selected")
+    }
+}
+
+// MARK: - Settings attributions (hover typewriter tip)
+
+private struct AttributionTooltipContent: View {
+    /// Unicode black heart (♥); reads cleanly in pixel and system tooltips.
+    static let fullText = "Made with \u{2665} Tanner A. Wuster"
+
+    let palette: ThemePalette
+    @State private var visibleCount = 0
+    @State private var typeTask: Task<Void, Never>?
+
+    var body: some View {
+        let shown = String(Self.fullText.prefix(visibleCount))
+        let caret = visibleCount < Self.fullText.count ? "▌" : ""
+
+        Text(shown + caret)
+            .font(palette.isClassicMacOS ? .callout : palette.bodyFont(size: palette.tooltipFontSize))
+            .foregroundStyle(palette.isClassicMacOS ? Color.primary : palette.accentSecondary)
+            .multilineTextAlignment(.leading)
+            .frame(width: 268, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(14)
+            .background {
+                if palette.isClassicMacOS {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(.thickMaterial)
+                } else {
+                    palette.backgroundPanel
+                }
+            }
+            .overlay {
+                Group {
+                    if palette.isClassicMacOS {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(Color.primary.opacity(0.14), lineWidth: 1)
+                    } else if palette.usePixelChrome {
+                        Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2)
+                    } else {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: 0.4), lineWidth: 1)
+                    }
+                }
+            }
+            .shadow(
+                color: palette.isClassicMacOS ? Color.black.opacity(0.35) : palette.tooltipShadow,
+                radius: palette.isClassicMacOS ? 10 : (palette.usePixelChrome ? 0 : 4),
+                x: 0,
+                y: palette.isClassicMacOS ? 3 : 2
+            )
+            .onAppear { runTypewriter() }
+            .onDisappear {
+                typeTask?.cancel()
+                typeTask = nil
+            }
+    }
+
+    private func runTypewriter() {
+        typeTask?.cancel()
+        visibleCount = 0
+        typeTask = Task {
+            let n = Self.fullText.count
+            for i in 0...n {
+                try? await Task.sleep(nanoseconds: 16_000_000)
+                guard !Task.isCancelled else { return }
+                await MainActor.run { visibleCount = i }
+            }
+        }
+    }
+}
+
+private final class AttributionsHoverControl: NSButton {
+    private static let hoverDelay: TimeInterval = 0.1
+
+    private var palette: ThemePalette = .builtinEightBit
+    private var hoverWork: DispatchWorkItem?
+    private var tipPanel: NSPanel?
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        commonInit()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonInit()
+    }
+
+    private func commonInit() {
+        isBordered = false
+        setButtonType(.momentaryChange)
+        focusRingType = .none
+        applyPalette(.builtinEightBit)
+    }
+
+    func applyPalette(_ p: ThemePalette) {
+        palette = p
+        let title = p.isClassicMacOS ? "Attributions" : "ATTRIBUTIONS"
+        let font: NSFont = p.isClassicMacOS
+            ? .systemFont(ofSize: 11, weight: .regular)
+            : (p.usePixelFont ? PixelTheme.nsFont(size: 7) : .systemFont(ofSize: 11, weight: .medium))
+        let color: NSColor = p.isClassicMacOS ? .secondaryLabelColor : NSColor(p.textMuted)
+        attributedTitle = NSAttributedString(string: title, attributes: [
+            .font: font,
+            .foregroundColor: color,
+        ])
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        trackingAreas.forEach { removeTrackingArea($0) }
+        addTrackingArea(NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect],
+            owner: self,
+            userInfo: nil
+        ))
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        cancelScheduledTip()
+        let work = DispatchWorkItem { [weak self] in
+            self?.showTip()
+        }
+        hoverWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.hoverDelay, execute: work)
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        cancelScheduledTip()
+        hideTip()
+    }
+
+    private func cancelScheduledTip() {
+        hoverWork?.cancel()
+        hoverWork = nil
+    }
+
+    private func hideTip() {
+        tipPanel?.orderOut(nil)
+        tipPanel = nil
+    }
+
+    private func showTip() {
+        hideTip()
+        guard let win = window else { return }
+
+        let bubble = AttributionTooltipContent(palette: palette)
+        let host = NSHostingController(rootView: bubble)
+        let targetWidth: CGFloat = 296
+        host.view.setFrameSize(NSSize(width: targetWidth, height: 600))
+        host.view.layoutSubtreeIfNeeded()
+        var panelH = host.view.fittingSize.height
+        if panelH < 40 { panelH = 72 }
+
+        let rect = convert(bounds, to: nil)
+        let screen = win.convertToScreen(rect)
+        var originX = screen.midX - targetWidth / 2
+        var originY = screen.maxY + 8
+
+        if let scr = win.screen {
+            if originX + targetWidth > scr.visibleFrame.maxX - 4 {
+                originX = scr.visibleFrame.maxX - targetWidth - 4
+            }
+            if originX < scr.visibleFrame.minX + 4 {
+                originX = scr.visibleFrame.minX + 4
+            }
+            let panelTop = originY + panelH
+            if panelTop > scr.visibleFrame.maxY - 4 {
+                originY = screen.minY - panelH - 8
+            }
+            if originY < scr.visibleFrame.minY + 4 {
+                originY = scr.visibleFrame.minY + 4
+            }
+        }
+
+        let panel = NSPanel(
+            contentRect: NSRect(x: originX, y: originY, width: targetWidth, height: panelH),
+            styleMask: [.borderless, .nonactivatingPanel],
+            backing: .buffered,
+            defer: false
+        )
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.level = .popUpMenu
+        panel.hasShadow = false
+        panel.isReleasedWhenClosed = false
+        panel.contentView = host.view
+        panel.setContentSize(NSSize(width: targetWidth, height: panelH))
+        panel.orderFrontRegardless()
+        tipPanel = panel
+    }
+
+    deinit {
+        cancelScheduledTip()
+        hideTip()
+    }
+}
+
+private struct AttributionsLinkRepresentable: NSViewRepresentable {
+    @ObservedObject var model: AppModel
+
+    func makeNSView(context: Context) -> AttributionsHoverControl {
+        let b = AttributionsHoverControl()
+        b.setAccessibilityLabel("Attributions, shows credit on hover")
+        return b
+    }
+
+    func updateNSView(_ b: AttributionsHoverControl, context: Context) {
+        b.applyPalette(ThemePalette.palette(for: model.appTheme, model: model))
+    }
+}
+
+private struct AttributionsFooterLink: View {
+    @ObservedObject var model: AppModel
+
+    var body: some View {
+        AttributionsLinkRepresentable(model: model)
+            .fixedSize()
     }
 }
 
