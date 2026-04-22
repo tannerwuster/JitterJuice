@@ -88,18 +88,18 @@ open .derivedData/Build/Products/Debug/JitterJuice.app
 
 Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`). **Master exports** for menu bar art (edit here, then copy into the matching `.imageset` when updating the app) are in **`Artwork/MenuBar/`**:
 
-| File | Role |
-|------|------|
-| `Artwork/MenuBar/jitterjuicemenuicon.png` | Default can → `JitterJuiceMenuBar.imageset` |
-| `Artwork/MenuBar/applejuiceicon.png` | Apple Juice → `applejuiceicon.imageset` |
-| `Artwork/MenuBar/draculaicon.png` | Dracula Juice → `draculaicon.imageset` |
-| `Artwork/MenuBar/deadlyjuice.png` | Deadly Juice → `deadlyjuice.imageset` |
-| `Artwork/MenuBar/moonjuiceicon.png` | Moon Juice → `moonjuiceicon.imageset` |
-| `Artwork/MenuBar/orangejuiceicon.png` | Donny Juice → `donnyjuiceicon.imageset` |
-| `Artwork/MenuBar/treehuggerjuiceicon.png` | Treehugger Juice → `treehuggerjuiceicon.imageset` |
-| `Artwork/MenuBar/pridejuiceicon.png` | Pride Juice → `pridejuiceicon.imageset` |
-| `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
-| `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
-| `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
-| `Artwork/README/main-menu.png` | README screenshot (main menu, menu bar cropped) |
-| `Artwork/README/settings-themes.png` | README screenshot (settings & themes) |
+| Icon | File | Role |
+|:----:|------|------|
+| <img src="Artwork/MenuBar/jitterjuicemenuicon.png" width="40" alt="Default can" /> | `Artwork/MenuBar/jitterjuicemenuicon.png` | Default can → `JitterJuiceMenuBar.imageset` |
+| <img src="Artwork/MenuBar/applejuiceicon.png" width="40" alt="Apple Juice" /> | `Artwork/MenuBar/applejuiceicon.png` | Apple Juice → `applejuiceicon.imageset` |
+| <img src="Artwork/MenuBar/draculaicon.png" width="40" alt="Dracula Juice" /> | `Artwork/MenuBar/draculaicon.png` | Dracula Juice → `draculaicon.imageset` |
+| <img src="Artwork/MenuBar/deadlyjuice.png" width="40" alt="Deadly Juice" /> | `Artwork/MenuBar/deadlyjuice.png` | Deadly Juice → `deadlyjuice.imageset` |
+| <img src="Artwork/MenuBar/moonjuiceicon.png" width="40" alt="Moon Juice" /> | `Artwork/MenuBar/moonjuiceicon.png` | Moon Juice → `moonjuiceicon.imageset` |
+| <img src="Artwork/MenuBar/orangejuiceicon.png" width="40" alt="Donny Juice" /> | `Artwork/MenuBar/orangejuiceicon.png` | Donny Juice → `donnyjuiceicon.imageset` |
+| <img src="Artwork/MenuBar/treehuggerjuiceicon.png" width="40" alt="Treehugger Juice" /> | `Artwork/MenuBar/treehuggerjuiceicon.png` | Treehugger Juice → `treehuggerjuiceicon.imageset` |
+| <img src="Artwork/MenuBar/pridejuiceicon.png" width="40" alt="Pride Juice" /> | `Artwork/MenuBar/pridejuiceicon.png` | Pride Juice → `pridejuiceicon.imageset` |
+| <img src="Artwork/MenuBar/hailstormjuiceicon.png" width="40" alt="Hail Storm Juice" /> | `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
+| <img src="Artwork/MenuBar/jitterjuiceicon.png" width="40" alt="App icon" /> | `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
+| <img src="Artwork/MenuBar/jitterjuicelogo.png" width="120" alt="JitterJuice logo art" /> | `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
+| <img src="Artwork/README/main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/main-menu.png` | README screenshot (main menu, menu bar cropped) |
+| <img src="Artwork/README/settings-themes.png" width="100" alt="Settings themes screenshot" /> | `Artwork/README/settings-themes.png` | README screenshot (settings & themes) |
