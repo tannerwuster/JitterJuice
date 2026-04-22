@@ -8,6 +8,21 @@ macOS menu bar app: **nudge the cursor on a timer** and optionally **keep the di
 
 *What it’s “for”:* That status indicator that claims to know if you’re “there”? Not our department. Definitely not for convincing certain chat apps you’re glued to your desk while you make toast. Professionals, all of us.
 
+### Main menu
+
+![JitterJuice main menu](Artwork/README/main-menu.png)
+
+- **Jiggle Mouse** nudges the cursor on an interval you choose. That tiny movement is often enough to keep chat and other apps from treating you as “away” or idle when you’re still at the desk—without babysitting the window.
+- **Wakey Wakey** asks macOS to keep the **display** from sleeping (a “caffeinated” display), with optional auto-stop and a daily time window. It’s separate from Jiggle Mouse; use either or both.
+
+Open **Settings** (gear) for idle-only jiggle, nudge distance, menu bar icon style, and the full list of themes.
+
+### Themes (Settings → Appearance)
+
+![JitterJuice settings and Juice themes](Artwork/README/settings-themes.png)
+
+**Juice** themes reskin the retro menu and menu bar art so you can match your vibe—classic Jitter purple, Dracula, Moon, Deadly, Apple system style, Donny, Treehugger, Pride, Hail Storm (pixel rain), or your own colors under **Custom Juice**.
+
 ---
 
 ## Download
@@ -86,3 +101,5 @@ Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`).
 | `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
 | `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
 | `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
+| `Artwork/README/main-menu.png` | README screenshot (main menu, menu bar cropped) |
+| `Artwork/README/settings-themes.png` | README screenshot (settings & themes) |
