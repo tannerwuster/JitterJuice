@@ -1,41 +1,47 @@
-# JitterJuice
+# JitterJuice · v1.0
 
 ![JitterJuice logo](jitterjuicelogo.png)
 
-The smug little can up there is **Jerry**. He’s the mascot, the attitude, and—let’s be honest—the whole brand.
+**Jerry** is the smug little can in the art—mascot, attitude, entire brand.
 
-macOS menu bar utility that **occasionally moves your cursor** because apparently that’s a thing people need. It also **pesters your display into staying awake** if you’d rather not babysit `caffeinate` in Terminal.
+macOS menu bar app: **nudge the cursor on a timer** and optionally **keep the display awake**, without living in Terminal.
 
-**What it’s “for”:** You know that little indicator that pretends to know if you’re “there”? This doesn’t talk about that. It definitely isn’t for making certain chat apps think you’re riveted to your desk instead of, say, making toast. That would be weird. We’re all professionals here.
+*What it’s “for”:* That status indicator that claims to know if you’re “there”? Not our department. Definitely not for convincing certain chat apps you’re glued to your desk while you make toast. Professionals, all of us.
 
-## Download (Mac)
+---
 
-**[⬇ Latest release](https://github.com/tannerwuster/JitterJuice/releases/latest)** — open the latest release, download the attached **`.zip`**, unzip it, drag **JitterJuice.app** into **Applications**.
+## Download
 
-If that link 404s, you haven’t published a release with a downloadable **`.zip`** yet—Jerry’s waiting in the wings.
+| Version | macOS |
+|--------:|--------|
+| **1.0** | [**Latest release** (`.zip`)](https://github.com/tannerwuster/JitterJuice/releases/latest) |
 
-**First open:** Unsigned or lightly signed apps often get the “can’t be opened” lecture. **Right-click** the app → **Open** → confirm **Open**, or use **System Settings → Privacy & Security** and allow it there. Jerry’s worth the paperwork.
+Unzip, drag **JitterJuice.app** into **Applications**. If the release page is empty, publish a **`.zip`** on [Releases](https://github.com/tannerwuster/JitterJuice/releases) first.
 
-### Shipping a release on GitHub (for you, the human with the keys)
+**Gatekeeper:** Right-click the app → **Open** → **Open**, or allow it under **System Settings → Privacy & Security**. Worth it for Jerry.
 
-1. In Xcode, **Product → Archive** (Release), then **Distribute App** → **Copy App** (or export however you like) so you have **`JitterJuice.app`**.
-2. Zip it: **Finder → Compress “JitterJuice”** (you get `JitterJuice.zip`).
-3. On GitHub: repo → **Releases** → **Draft a new release** → pick a tag (e.g. `v1.0.0`) → upload **`JitterJuice.zip`** as a release asset → publish.
+<details>
+<summary><strong>Maintainers: ship a release</strong></summary>
 
-After that, the **Latest release** link above sends people straight to the download.
+1. **Xcode:** Product → Archive → Distribute App → **Copy App** (or export **`JitterJuice.app`**).
+2. Zip **`JitterJuice.app`** → upload **`JitterJuice.zip`** on GitHub **Releases** with tag **`v1.0.0`** (or bump to match the table above).
+3. Update this README’s version in the title and table when you cut a new release.
 
-## Build & run
+</details>
 
-**Repo:** [github.com/tannerwuster/JitterJuice](https://github.com/tannerwuster/JitterJuice)
+---
+
+## Build from source
+
+Repo: [github.com/tannerwuster/JitterJuice](https://github.com/tannerwuster/JitterJuice)
 
 ```bash
 git clone https://github.com/tannerwuster/JitterJuice.git
 cd JitterJuice
+# SSH: git@github.com:tannerwuster/JitterJuice.git
 ```
 
-*(SSH: `git@github.com:tannerwuster/JitterJuice.git`)*
-
-Open `JitterJuice.xcodeproj` in Xcode and run the **JitterJuice** scheme, or from the repo root:
+Open **`JitterJuice.xcodeproj`** in Xcode (scheme **JitterJuice**), or:
 
 ```bash
 xcodebuild -project JitterJuice.xcodeproj -scheme JitterJuice -configuration Debug -derivedDataPath "$(pwd)/.derivedData" build
@@ -44,9 +50,11 @@ open .derivedData/Build/Products/Debug/JitterJuice.app
 
 ## Permissions
 
-- **Accessibility** is required for mouse nudges—Apple considers nudging pixels a sacred ritual. Enable JitterJuice under **System Settings → Privacy & Security → Accessibility**.
+**Accessibility** (mouse nudges): **System Settings → Privacy & Security → Accessibility** → enable JitterJuice.
 
 ## Assets
 
-- Menu bar icon source: `jitterjuiceicon.png` (resized into the asset catalog as `JitterJuiceMenuBar`).
-- Marketing / README art: `jitterjuicelogo.png`.
+| File | Role |
+|------|------|
+| `jitterjuiceicon.png` | Menu bar source → `JitterJuiceMenuBar` in the asset catalog |
+| `jitterjuicelogo.png` | README / marketing |
