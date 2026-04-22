@@ -1231,7 +1231,7 @@ private struct ThemedRadioDot: View {
 
 private struct AttributionTooltipContent: View {
     /// Unicode black heart (♥); reads cleanly in pixel and system tooltips.
-    static let fullText = "Made with \u{2665} Tanner A. Wuster"
+    static let fullText = "Made with \u{2665} by Tanner A. Wuster"
 
     let palette: ThemePalette
     @State private var visibleCount = 0
