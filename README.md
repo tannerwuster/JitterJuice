@@ -1,6 +1,6 @@
 # JitterJuice · v1.0
 
-![JitterJuice logo](jitterjuicelogo.png)
+![JitterJuice logo](Artwork/MenuBar/jitterjuicelogo.png)
 
 **Jerry** is the smug little can in the art—mascot, attitude, entire brand.
 
