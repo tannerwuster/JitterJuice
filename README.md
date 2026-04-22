@@ -18,7 +18,21 @@ macOS menu bar app: **nudge the cursor on a timer** and optionally **keep the di
 
 Download the **`.dmg`** from the release, **double-click** to mount it, then drag **JitterJuice.app** into **Applications** (the disk image has a shortcut there). Eject when finished. If there’s nothing to download yet, attach a **`.dmg`** on [Releases](https://github.com/tannerwuster/JitterJuice/releases) first.
 
-**Gatekeeper:** Right-click the app → **Open** → **Open**, or allow it under **System Settings → Privacy & Security**. Worth it for Jerry.
+### macOS won’t let Jerry in (Gatekeeper tantrums)
+
+Apple’s bouncer doesn’t recognize this build—it’s not **notarized**, so your Mac may flash a dramatic **“could not verify…”** dialog with all the warmth of a tax audit. Jerry’s harmless; the paperwork just isn’t filed.
+
+Try, in order:
+
+1. **System Settings → Privacy & Security** — scroll until you see a note that **JitterJuice** was blocked, then smash **Open Anyway** (it’s shy; it only shows up after you’ve tried to open the app once and been rejected, like a nightclub with emotional baggage).
+2. **Right-click (or Control-click) `JitterJuice.app` → Open** — sometimes this reveals an **Open** button that double-clicking cruelly withholds.
+3. **Terminal, if you trust what you downloaded** (e.g. you built it or read the source): strip the quarantine sticker and try again:
+   ```bash
+   xattr -cr /Applications/JitterJuice.app
+   ```
+   If the app lives somewhere else, point at that path instead. Don’t run this on random binaries from strangers—only on Jerry when you’re sure he’s *your* Jerry.
+
+The *fancy* fix for everyone else is **Developer ID signing + notarization** (paid Apple Developer account). Until then, welcome to the club of indie apps that macOS side-eyes for sport.
 
 <details>
 <summary><strong>Maintainers: ship a release</strong></summary>
