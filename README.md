@@ -14,18 +14,21 @@ macOS menu bar app: **nudge the cursor on a timer** and optionally **keep the di
 
 | Version | macOS |
 |--------:|--------|
-| **1.0** | [**Latest release** (`.zip`)](https://github.com/tannerwuster/JitterJuice/releases/latest) |
+| **1.0** | [**Latest release** (`.dmg`)](https://github.com/tannerwuster/JitterJuice/releases/latest) |
 
-Unzip, drag **JitterJuice.app** into **Applications**. If the release page is empty, publish a **`.zip`** on [Releases](https://github.com/tannerwuster/JitterJuice/releases) first.
+Download the **`.dmg`** from the release, **double-click** to mount it, then drag **JitterJuice.app** into **Applications** (the disk image has a shortcut there). Eject when finished. If there’s nothing to download yet, attach a **`.dmg`** on [Releases](https://github.com/tannerwuster/JitterJuice/releases) first.
 
 **Gatekeeper:** Right-click the app → **Open** → **Open**, or allow it under **System Settings → Privacy & Security**. Worth it for Jerry.
 
 <details>
 <summary><strong>Maintainers: ship a release</strong></summary>
 
-1. **Xcode:** Product → Archive → Distribute App → **Copy App** (or export **`JitterJuice.app`**).
-2. Zip **`JitterJuice.app`** → upload **`JitterJuice.zip`** on GitHub **Releases** with tag **`v1.0.0`** (or bump to match the table above).
-3. Update this README’s version in the title and table when you cut a new release.
+1. **Xcode:** Product → Archive → Distribute App → **Copy App** (or export **`JitterJuice.app`** from a **Release** build).
+2. **DMG:** Put **`JitterJuice.app`** in a folder, add `ln -s /Applications Applications`, then run  
+   `hdiutil create -volname "JitterJuice" -srcfolder <that-folder> -ov -format UDZO -fs HFS+ JitterJuice-1.0.dmg`  
+   (bump the filename when the version changes).
+3. Upload the **`.dmg`** on GitHub **Releases** with tag **`v1.0.0`** (or match the version in the table above).
+4. Update this README’s version in the title and table when you cut a new release.
 
 </details>
 
