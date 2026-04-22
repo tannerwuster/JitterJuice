@@ -101,5 +101,5 @@ Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`).
 | <img src="Artwork/MenuBar/hailstormjuiceicon.png" width="40" alt="Hail Storm Juice" /> | `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
 | <img src="Artwork/MenuBar/jitterjuiceicon.png" width="40" alt="App icon" /> | `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
 | <img src="Artwork/MenuBar/jitterjuicelogo.png" width="120" alt="JitterJuice logo art" /> | `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
-| <img src="Artwork/README/readme-main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/readme-main-menu.png` | README screenshot (main menu, menu bar cropped, transparent mat) |
-| <img src="Artwork/README/readme-settings-appearance.png" width="100" alt="Settings themes screenshot" /> | `Artwork/README/readme-settings-appearance.png` | README screenshot (settings & themes, transparent mat) |
+| <img src="Artwork/README/readme-main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/readme-main-menu.png` | README screenshot (main menu, full frame, transparent mat) |
+| <img src="Artwork/README/readme-settings-appearance.png" width="100" alt="Settings themes screenshot" /> | `Artwork/README/readme-settings-appearance.png` | README screenshot (settings & themes, full frame, transparent mat) |
