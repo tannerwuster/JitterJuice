@@ -1,0 +1,13 @@
+{
+  "images" : [
+    {
+      "filename" : "treehuggerjuiceicon.png",
+      "idiom" : "mac",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

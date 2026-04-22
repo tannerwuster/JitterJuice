@@ -71,7 +71,18 @@ open .derivedData/Build/Products/Debug/JitterJuice.app
 
 ## Assets
 
+Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`). **Master exports** for menu bar art (edit here, then copy into the matching `.imageset` when updating the app) are in **`Artwork/MenuBar/`**:
+
 | File | Role |
 |------|------|
-| `jitterjuiceicon.png` | Menu bar source → `JitterJuiceMenuBar` in the asset catalog |
-| `jitterjuicelogo.png` | README |
+| `Artwork/MenuBar/jitterjuicemenuicon.png` | Default can → `JitterJuiceMenuBar.imageset` |
+| `Artwork/MenuBar/applejuiceicon.png` | Apple Juice → `applejuiceicon.imageset` |
+| `Artwork/MenuBar/draculaicon.png` | Dracula Juice → `draculaicon.imageset` |
+| `Artwork/MenuBar/deadlyjuice.png` | Deadly Juice → `deadlyjuice.imageset` |
+| `Artwork/MenuBar/moonjuiceicon.png` | Moon Juice → `moonjuiceicon.imageset` |
+| `Artwork/MenuBar/orangejuiceicon.png` | Donny Juice → `donnyjuiceicon.imageset` |
+| `Artwork/MenuBar/treehuggerjuiceicon.png` | Treehugger Juice → `treehuggerjuiceicon.imageset` |
+| `Artwork/MenuBar/pridejuiceicon.png` | Pride Juice → `pridejuiceicon.imageset` |
+| `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
+| `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
+| `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |

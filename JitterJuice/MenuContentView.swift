@@ -4,14 +4,19 @@ import SwiftUI
 struct MenuContentView: View {
     @ObservedObject var model: AppModel
     @State private var showSettings = false
+    /// Frames of UI “boxes” in `jjMenuRain` space; used to block rain and draw edge trickles (Hail Storm).
+    @State private var rainOccluderRects: [CGRect] = []
 
     var body: some View {
         let palette = ThemePalette.palette(for: model.appTheme, model: model)
-        if palette.isClassicMacOS {
-            macClassicChrome
-        } else {
-            retroChrome(palette: palette)
+        Group {
+            if palette.isClassicMacOS {
+                macClassicChrome
+            } else {
+                retroChrome(palette: palette)
+            }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
@@ -61,11 +66,22 @@ struct MenuContentView: View {
         .padding(.top, 16)
         .padding(.bottom, 16)
         .padding(.trailing, showSettings ? 0 : 12)
+        .background {
+            ZStack {
+                Rectangle()
+                    .fill(palette.backgroundDeep)
+                if palette.showsMenuPixelRain {
+                    PixelMenuRainOverlay(occluders: rainOccluderRects)
+                        .allowsHitTesting(false)
+                }
+            }
+        }
+        .coordinateSpace(name: "jjMenuRain")
+        .onPreferenceChange(RainOccluderKey.self) { rainOccluderRects = $0 }
         .frame(minWidth: 320)
-        .background(palette.backgroundDeep)
         .environment(\.colorScheme, palette.preferredColorScheme)
         .environment(\.jjTheme, palette)
-        .tint(palette.accent)
+        .tint(palette.chromeControlTint)
     }
 
     private var macClassicMainPanel: some View {
@@ -149,13 +165,21 @@ struct MenuContentView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             macClassicThemePickRow(theme: .eightBit)
                             macClassicRowDivider
-                            macClassicThemePickRow(theme: .macOS)
-                            macClassicRowDivider
                             macClassicThemePickRow(theme: .dracula)
                             macClassicRowDivider
                             macClassicThemePickRow(theme: .light)
                             macClassicRowDivider
                             macClassicThemePickRow(theme: .dark)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .macOS)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .donny)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .treehugger)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .pride)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .hailStorm)
                             macClassicRowDivider
                             macClassicThemePickRow(theme: .custom)
                             if model.appTheme == .custom {
@@ -418,6 +442,8 @@ struct MenuContentView: View {
                 .tracking(palette.usePixelFont ? 1 : 0)
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
+                .padding(.vertical, 4)
+                .jjRainOccluder(palette.showsMenuPixelRain)
 
             Toggle(isOn: jiggleBinding) {
                 toggleLabelWithTooltip(
@@ -430,6 +456,8 @@ struct MenuContentView: View {
             }
             .toggleStyle(ThemedToggleStyle(palette: palette))
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 2)
+            .jjRainOccluder(palette.showsMenuPixelRain)
 
             if model.jiggleEnabled {
                 Stepper(value: Binding(
@@ -442,6 +470,8 @@ struct MenuContentView: View {
                 }
                 .padding(.leading, palette.useLightningToggle ? 32 : 28)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 2)
+                .jjRainOccluder(palette.showsMenuPixelRain)
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
@@ -456,11 +486,14 @@ struct MenuContentView: View {
             }
             .toggleStyle(ThemedToggleStyle(palette: palette))
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 2)
+            .jjRainOccluder(palette.showsMenuPixelRain)
 
             if model.stayAwakeEnabled {
                 stayAwakeRetroCard(palette: palette)
                     .padding(.leading, palette.useLightningToggle ? 32 : 28)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .jjRainOccluder(palette.showsMenuPixelRain)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
@@ -481,13 +514,14 @@ struct MenuContentView: View {
                 .overlay(
                     Group {
                         if palette.usePixelChrome {
-                            Rectangle().strokeBorder(palette.border, lineWidth: 2)
+                            Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2)
                         } else {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .strokeBorder(palette.border.opacity(0.5), lineWidth: 1)
+                                .strokeBorder(palette.chromeBorderStyle(opacity: 0.5), lineWidth: 1)
                         }
                     }
                 )
+                .jjRainOccluder(palette.showsMenuPixelRain)
             }
 
             themedDivider(palette: palette)
@@ -511,6 +545,7 @@ struct MenuContentView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 2)
+            .jjRainOccluder(palette.showsMenuPixelRain)
         }
         .frame(maxWidth: 300)
         .frame(maxWidth: .infinity)
@@ -591,10 +626,10 @@ struct MenuContentView: View {
         .overlay(
             Group {
                 if palette.usePixelChrome {
-                    Rectangle().strokeBorder(palette.border.opacity(0.55), lineWidth: 2)
+                    Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 0.55), lineWidth: 2)
                 } else {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(palette.border.opacity(0.35), lineWidth: 1)
+                        .strokeBorder(palette.chromeBorderStyle(opacity: 0.35), lineWidth: 1)
                 }
             }
         )
@@ -682,6 +717,8 @@ struct MenuContentView: View {
                         .font(palette.titleFont(size: palette.usePixelFont ? 11 : 18))
                         .foregroundStyle(palette.textPrimary)
                         .tracking(palette.usePixelFont ? 1 : 0)
+                        .padding(.vertical, 4)
+                        .jjRainOccluder(palette.showsMenuPixelRain)
 
                     settingsSectionDivider(palette: palette)
 
@@ -691,13 +728,21 @@ struct MenuContentView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             themeChoiceRow(theme: .eightBit, palette: palette)
                             settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .macOS, palette: palette)
-                            settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .dracula, palette: palette)
                             settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .light, palette: palette)
                             settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .dark, palette: palette)
+                            settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .macOS, palette: palette)
+                            settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .donny, palette: palette)
+                            settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .treehugger, palette: palette)
+                            settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .pride, palette: palette)
+                            settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .hailStorm, palette: palette)
                             settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .custom, palette: palette)
                             if model.appTheme == .custom {
@@ -711,10 +756,10 @@ struct MenuContentView: View {
                         .overlay(
                             Group {
                                 if palette.usePixelChrome {
-                                    Rectangle().strokeBorder(palette.border.opacity(0.55), lineWidth: 2)
+                                    Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 0.55), lineWidth: 2)
                                 } else {
                                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .strokeBorder(palette.border.opacity(0.35), lineWidth: 1)
+                                        .strokeBorder(palette.chromeBorderStyle(opacity: 0.35), lineWidth: 1)
                                 }
                             }
                         )
@@ -766,13 +811,14 @@ struct MenuContentView: View {
                         .overlay(
                             Group {
                                 if palette.usePixelChrome {
-                                    Rectangle().strokeBorder(palette.border.opacity(0.55), lineWidth: 2)
+                                    Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 0.55), lineWidth: 2)
                                 } else {
                                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .strokeBorder(palette.border.opacity(0.35), lineWidth: 1)
+                                        .strokeBorder(palette.chromeBorderStyle(opacity: 0.35), lineWidth: 1)
                                 }
                             }
                         )
+                        .jjRainOccluder(palette.showsMenuPixelRain)
                     }
 
                     settingsSectionDivider(palette: palette)
@@ -805,6 +851,7 @@ struct MenuContentView: View {
             }
             .padding(.top, 10)
             .padding(.bottom, 2)
+            .jjRainOccluder(palette.showsMenuPixelRain)
         }
     }
 
@@ -824,7 +871,7 @@ struct MenuContentView: View {
 
     private func themedDivider(palette: ThemePalette) -> some View {
         Rectangle()
-            .fill(palette.border.opacity(0.4))
+            .fill(palette.chromeDividerFill(opacity: 0.4))
             .frame(height: palette.usePixelChrome ? 2 : 1)
     }
 
@@ -900,7 +947,7 @@ struct MenuContentView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 6)
                     .background(palette.toggleOffFill.opacity(0.55))
-                    .overlay(Rectangle().strokeBorder(palette.border.opacity(0.5), lineWidth: palette.usePixelChrome ? 2 : 1))
+                    .overlay(Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 0.5), lineWidth: palette.usePixelChrome ? 2 : 1))
             }
         }
     }
@@ -919,7 +966,7 @@ struct MenuContentView: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 5)
                 .background(palette.toggleOffFill.opacity(0.55))
-                .overlay(Rectangle().strokeBorder(palette.border.opacity(0.5), lineWidth: palette.usePixelChrome ? 2 : 1))
+                .overlay(Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 0.5), lineWidth: palette.usePixelChrome ? 2 : 1))
         }
     }
 
@@ -1008,15 +1055,16 @@ private struct ThemeChoiceBurstRow: View {
                 Group {
                     if palette.usePixelChrome {
                         Rectangle()
-                            .strokeBorder(palette.border.opacity(selected ? 1 : 0.45), lineWidth: selected ? 2 : 1)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: selected ? 1 : 0.45), lineWidth: selected ? 2 : 1)
                     } else {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .strokeBorder(palette.border.opacity(selected ? 0.9 : 0.35), lineWidth: selected ? 1.5 : 1)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: selected ? 0.9 : 0.35), lineWidth: selected ? 1.5 : 1)
                     }
                 }
             )
         }
         .buttonStyle(.plain)
+        .jjRainOccluder(palette.showsMenuPixelRain)
     }
 }
 
@@ -1064,15 +1112,44 @@ private struct IconChoiceBurstRow: View {
                 Group {
                     if palette.usePixelChrome {
                         Rectangle()
-                            .strokeBorder(palette.border.opacity(selected ? 1 : 0.45), lineWidth: selected ? 2 : 1)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: selected ? 1 : 0.45), lineWidth: selected ? 2 : 1)
                     } else {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .strokeBorder(palette.border.opacity(selected ? 0.9 : 0.35), lineWidth: selected ? 1.5 : 1)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: selected ? 0.9 : 0.35), lineWidth: selected ? 1.5 : 1)
                     }
                 }
             )
         }
         .buttonStyle(.plain)
+        .jjRainOccluder(palette.showsMenuPixelRain)
+    }
+}
+
+// MARK: - Hail Storm rain occluders
+
+private struct RainOccluderKey: PreferenceKey {
+    static var defaultValue: [CGRect] = []
+
+    static func reduce(value: inout [CGRect], nextValue: () -> [CGRect]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func jjRainOccluder(_ enabled: Bool) -> some View {
+        if enabled {
+            background {
+                GeometryReader { geo in
+                    Color.clear.preference(
+                        key: RainOccluderKey.self,
+                        value: [geo.frame(in: .named("jjMenuRain"))]
+                    )
+                }
+            }
+        } else {
+            self
+        }
     }
 }
 
@@ -1093,20 +1170,20 @@ private struct ThemedGearIcon: View {
                         .fill(palette.toggleOffFill)
                         .frame(width: 28, height: 28)
                     Rectangle()
-                        .strokeBorder(palette.border, lineWidth: 2)
+                        .strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2)
                         .frame(width: 28, height: 28)
                 } else {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
                         .fill(palette.backgroundPanel)
                         .frame(width: 28, height: 28)
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .strokeBorder(palette.border.opacity(0.5), lineWidth: 1)
+                        .strokeBorder(palette.chromeBorderStyle(opacity: 0.5), lineWidth: 1)
                         .frame(width: 28, height: 28)
                 }
             }
             Image(systemName: "gearshape.fill")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(palette.accent)
+                .foregroundStyle(palette.chromeForegroundAccent())
         }
         .frame(width: 28, height: 28)
         .accessibilityLabel("Settings")
@@ -1122,17 +1199,17 @@ private struct ThemedRadioDot: View {
         ZStack {
             if palette.usePixelChrome {
                 Rectangle()
-                    .fill(filled ? palette.accent : palette.toggleOffFill)
+                    .fill(filled ? palette.chromeAccentFill(isPressed: false) : AnyShapeStyle(palette.toggleOffFill))
                     .frame(width: 14, height: 14)
                 Rectangle()
-                    .strokeBorder(palette.border, lineWidth: 2)
+                    .strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2)
                     .frame(width: 14, height: 14)
             } else {
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .fill(filled ? palette.accent : palette.toggleOffFill)
+                    .fill(filled ? palette.chromeAccentFill(isPressed: false) : AnyShapeStyle(palette.toggleOffFill))
                     .frame(width: 14, height: 14)
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .strokeBorder(palette.border.opacity(0.6), lineWidth: 1.5)
+                    .strokeBorder(palette.chromeBorderStyle(opacity: 0.6), lineWidth: 1.5)
                     .frame(width: 14, height: 14)
             }
         }
@@ -1189,10 +1266,10 @@ private struct TooltipBubble: View {
             .overlay(
                 Group {
                     if palette.usePixelChrome {
-                        Rectangle().strokeBorder(palette.border, lineWidth: 2)
+                        Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2)
                     } else {
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .strokeBorder(palette.border.opacity(0.4), lineWidth: 1)
+                            .strokeBorder(palette.chromeBorderStyle(opacity: 0.4), lineWidth: 1)
                     }
                 }
             )

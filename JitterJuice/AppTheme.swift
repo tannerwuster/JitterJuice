@@ -3,10 +3,14 @@ import SwiftUI
 
 enum AppTheme: String, CaseIterable, Identifiable {
     case eightBit
-    case macOS
     case dracula
     case light
     case dark
+    case macOS
+    case donny
+    case treehugger
+    case pride
+    case hailStorm
     case custom
 
     var id: String { rawValue }
@@ -14,10 +18,14 @@ enum AppTheme: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .eightBit: return "Jitter Juice"
-        case .macOS: return "Apple Juice"
         case .dracula: return "Dracula Juice"
         case .light: return "Moon Juice"
         case .dark: return "Deadly Juice"
+        case .macOS: return "Apple Juice"
+        case .donny: return "Donny Juice"
+        case .treehugger: return "Treehugger Juice"
+        case .pride: return "Pride Juice"
+        case .hailStorm: return "Hail Storm Juice"
         case .custom: return "Custom Juice"
         }
     }
@@ -67,8 +75,11 @@ struct ThemePalette {
     /// Pre–8-bit system UI: standard toggles, materials, no forced popover styling.
     var isClassicMacOS: Bool { theme == .macOS }
 
-    /// Bundled menu bar art already matches this palette; skip runtime recolor for pixel-perfect parity with **Color (original)**.
-    var matchesOriginalMenuBarAsset: Bool { theme == .eightBit }
+    /// Skip match-theme recolor — use the bundled can + bolt as-is (Jitter Juice & Custom Juice).
+    var matchesOriginalMenuBarAsset: Bool { theme == .eightBit || theme == .custom }
+
+    /// Chunky falling “rain” behind the retro menu (Stardew-style), e.g. Hail Storm Juice.
+    var showsMenuPixelRain: Bool { theme == .hailStorm }
 
     /// Default JitterJuice (8-bit) colors; used where no `AppModel` is available.
     static let builtinEightBit = ThemePalette(
@@ -217,6 +228,122 @@ struct ThemePalette {
                 preferredColorScheme: .dark
             )
 
+        case .donny:
+            let deep = Color(red: 0.40, green: 0.19, blue: 0.05)
+            let panel = Color(red: 0.58, green: 0.30, blue: 0.09)
+            let yellow = Color(red: 1.0, green: 0.90, blue: 0.16)
+            let purple = Color(red: 0.58, green: 0.24, blue: 0.94)
+            return ThemePalette(
+                theme: theme,
+                backgroundDeep: deep,
+                backgroundPanel: panel,
+                accent: yellow,
+                accentSecondary: purple,
+                textPrimary: Color(red: 1.0, green: 0.97, blue: 0.91),
+                textMuted: Color(red: 0.88, green: 0.62, blue: 0.40),
+                border: yellow,
+                toggleOnFill: yellow,
+                toggleOffFill: deep,
+                helpBadgeFill: deep,
+                helpBadgeStroke: purple,
+                helpGlyph: yellow,
+                buttonLabelOnAccent: Color(red: 0.22, green: 0.10, blue: 0.04),
+                tooltipShadow: Color.black.opacity(0.48),
+                usePixelFont: true,
+                useLightningToggle: true,
+                useSparkles: true,
+                usePixelHelpBadge: true,
+                usePixelChrome: true,
+                preferredColorScheme: .dark
+            )
+
+        case .treehugger:
+            let sage = Color(red: 163 / 255, green: 177 / 255, blue: 138 / 255)
+            let charcoal = Color(red: 47 / 255, green: 58 / 255, blue: 51 / 255)
+            let deep = Color(red: 0.34, green: 0.40, blue: 0.32)
+            let sageMist = Color(red: 0.82, green: 0.88, blue: 0.76)
+            return ThemePalette(
+                theme: theme,
+                backgroundDeep: deep,
+                backgroundPanel: sage,
+                accent: charcoal,
+                accentSecondary: sageMist,
+                textPrimary: charcoal,
+                textMuted: Color(red: 0.35, green: 0.42, blue: 0.38),
+                border: charcoal,
+                toggleOnFill: charcoal,
+                toggleOffFill: deep,
+                helpBadgeFill: deep,
+                helpBadgeStroke: sageMist,
+                helpGlyph: charcoal,
+                buttonLabelOnAccent: Color(red: 0.96, green: 0.97, blue: 0.94),
+                tooltipShadow: Color.black.opacity(0.22),
+                usePixelFont: true,
+                useLightningToggle: true,
+                useSparkles: true,
+                usePixelHelpBadge: true,
+                usePixelChrome: true,
+                preferredColorScheme: .light
+            )
+
+        case .pride:
+            let deep = Color(red: 0.16, green: 0.05, blue: 0.34)
+            let panel = Color(red: 140 / 255, green: 82 / 255, blue: 1.0)
+            let yellow = Color(red: 1.0, green: 222 / 255, blue: 89 / 255)
+            let pink = Color(red: 1.0, green: 163 / 255, blue: 177 / 255)
+            return ThemePalette(
+                theme: theme,
+                backgroundDeep: deep,
+                backgroundPanel: panel,
+                accent: yellow,
+                accentSecondary: pink,
+                textPrimary: Color(red: 0.98, green: 0.97, blue: 1.0),
+                textMuted: Color(red: 0.78, green: 0.68, blue: 0.95),
+                border: yellow,
+                toggleOnFill: yellow,
+                toggleOffFill: deep,
+                helpBadgeFill: deep,
+                helpBadgeStroke: pink,
+                helpGlyph: yellow,
+                buttonLabelOnAccent: Color(red: 0.12, green: 0.04, blue: 0.28),
+                tooltipShadow: Color.black.opacity(0.45),
+                usePixelFont: true,
+                useLightningToggle: true,
+                useSparkles: true,
+                usePixelHelpBadge: true,
+                usePixelChrome: true,
+                preferredColorScheme: .dark
+            )
+
+        case .hailStorm:
+            let black = Color(white: 0.04)
+            let panel = Color(white: 0.09)
+            let silver = Color(red: 0.78, green: 0.80, blue: 0.82)
+            let silverDim = Color(red: 0.48, green: 0.50, blue: 0.54)
+            return ThemePalette(
+                theme: theme,
+                backgroundDeep: black,
+                backgroundPanel: panel,
+                accent: silver,
+                accentSecondary: silverDim,
+                textPrimary: Color(red: 0.92, green: 0.93, blue: 0.95),
+                textMuted: Color(red: 0.55, green: 0.57, blue: 0.62),
+                border: silver,
+                toggleOnFill: silver,
+                toggleOffFill: black,
+                helpBadgeFill: black,
+                helpBadgeStroke: silver,
+                helpGlyph: silver,
+                buttonLabelOnAccent: Color(white: 0.06),
+                tooltipShadow: Color.black.opacity(0.55),
+                usePixelFont: true,
+                useLightningToggle: true,
+                useSparkles: true,
+                usePixelHelpBadge: true,
+                usePixelChrome: true,
+                preferredColorScheme: .dark
+            )
+
         case .custom:
             return customPalette(
                 mainHex: AppModel.defaultCustomMainHex,
@@ -262,6 +389,93 @@ struct ThemePalette {
     }
 }
 
+extension ThemePalette {
+    /// Horizontal rainbow matching the Pride can art (`#FF3131` … `#8C52FF`).
+    static let prideRainbowStripeColors: [Color] = [
+        Color(red: 1.0, green: 49 / 255, blue: 49 / 255),
+        Color(red: 1.0, green: 145 / 255, blue: 77 / 255),
+        Color(red: 1.0, green: 222 / 255, blue: 89 / 255),
+        Color(red: 126 / 255, green: 217 / 255, blue: 87 / 255),
+        Color(red: 56 / 255, green: 182 / 255, blue: 1.0),
+        Color(red: 140 / 255, green: 82 / 255, blue: 1.0),
+    ]
+
+    /// System controls (segmented pickers, etc.) — solid tint; rainbow is applied to chrome strokes/fills.
+    var chromeControlTint: Color {
+        theme == .pride ? Self.prideRainbowStripeColors[5] : accent
+    }
+
+    /// Section outlines, settings rows, gear, lightning box, tooltips.
+    func chromeBorderStyle(opacity: CGFloat) -> AnyShapeStyle {
+        if theme == .pride {
+            AnyShapeStyle(
+                LinearGradient(
+                    colors: Self.prideRainbowStripeColors.map { $0.opacity(opacity) },
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+        } else {
+            AnyShapeStyle(border.opacity(opacity))
+        }
+    }
+
+    /// Dividers between settings blocks.
+    func chromeDividerFill(opacity: CGFloat) -> AnyShapeStyle {
+        if theme == .pride {
+            AnyShapeStyle(
+                LinearGradient(
+                    colors: Self.prideRainbowStripeColors.map { $0.opacity(opacity) },
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+        } else {
+            AnyShapeStyle(border.opacity(opacity))
+        }
+    }
+
+    /// Done button fill, selected radio inner, lightning toggle “on” fill.
+    func chromeAccentFill(isPressed: Bool) -> AnyShapeStyle {
+        if theme == .pride {
+            if isPressed {
+                AnyShapeStyle(
+                    LinearGradient(
+                        colors: Self.prideRainbowStripeColors.reversed().map { $0.opacity(0.9) },
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+            } else {
+                AnyShapeStyle(
+                    LinearGradient(
+                        colors: Self.prideRainbowStripeColors,
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+            }
+        } else {
+            AnyShapeStyle(isPressed ? accentSecondary : accent)
+        }
+    }
+
+    /// Outline button label, gear glyph, lightning bolt when off.
+    func chromeForegroundAccent() -> AnyShapeStyle {
+        if theme == .pride {
+            AnyShapeStyle(
+                LinearGradient(
+                    colors: Self.prideRainbowStripeColors,
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+        } else {
+            AnyShapeStyle(accent)
+        }
+    }
+}
+
 private struct JJThemeKey: EnvironmentKey {
     static let defaultValue: ThemePalette = .builtinEightBit
 }
@@ -289,7 +503,7 @@ struct ThemedPrimaryButtonStyle: ButtonStyle {
                     .padding(.vertical, 8)
                     .background(
                         Rectangle()
-                            .fill(pressed ? palette.accentSecondary : palette.accent)
+                            .fill(palette.chromeAccentFill(isPressed: pressed))
                     )
                     .overlay(
                         Rectangle()
@@ -321,11 +535,11 @@ struct ThemedOutlineButtonStyle: ButtonStyle {
             return AnyView(
                 configuration.label
                     .font(palette.bodyFont(size: 9))
-                    .foregroundStyle(palette.accent)
+                    .foregroundStyle(palette.chromeForegroundAccent())
                     .padding(.horizontal, 12)
                     .padding(.vertical, 7)
                     .background(Rectangle().fill(palette.toggleOffFill.opacity(0.55)))
-                    .overlay(Rectangle().strokeBorder(palette.border, lineWidth: 2))
+                    .overlay(Rectangle().strokeBorder(palette.chromeBorderStyle(opacity: 1), lineWidth: 2))
                     .opacity(pressed ? 0.78 : 1)
             )
         } else {
