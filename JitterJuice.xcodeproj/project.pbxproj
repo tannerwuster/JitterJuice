@@ -14,6 +14,10 @@
 		B2A000000000000000000105 /* PowerAssertionHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000205 /* PowerAssertionHolder.swift */; };
 		B2A000000000000000000106 /* AccessibilityPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000206 /* AccessibilityPrompt.swift */; };
 		B2A000000000000000000107 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000207 /* Assets.xcassets */; };
+		B2A000000000000000000108 /* PressStart2P-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000208 /* PressStart2P-Regular.ttf */; };
+		B2A000000000000000000109 /* PixelTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000209 /* PixelTheme.swift */; };
+		B2A00000000000000000010A /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020A /* AppTheme.swift */; };
+		B2A00000000000000000010B /* ThemeColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020B /* ThemeColorUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +29,10 @@
 		B2A000000000000000000205 /* PowerAssertionHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerAssertionHolder.swift; sourceTree = "<group>"; };
 		B2A000000000000000000206 /* AccessibilityPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityPrompt.swift; sourceTree = "<group>"; };
 		B2A000000000000000000207 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B2A000000000000000000208 /* PressStart2P-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PressStart2P-Regular.ttf"; sourceTree = "<group>"; };
+		B2A000000000000000000209 /* PixelTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelTheme.swift; sourceTree = "<group>"; };
+		B2A00000000000000000020A /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		B2A00000000000000000020B /* ThemeColorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColorUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,10 +60,14 @@
 				B2A000000000000000000201 /* JitterJuiceApp.swift */,
 				B2A000000000000000000202 /* MenuContentView.swift */,
 				B2A000000000000000000203 /* AppModel.swift */,
+				B2A00000000000000000020A /* AppTheme.swift */,
+				B2A00000000000000000020B /* ThemeColorUtils.swift */,
 				B2A000000000000000000204 /* MouseJiggler.swift */,
 				B2A000000000000000000205 /* PowerAssertionHolder.swift */,
 				B2A000000000000000000206 /* AccessibilityPrompt.swift */,
+				B2A000000000000000000209 /* PixelTheme.swift */,
 				B2A000000000000000000207 /* Assets.xcassets */,
+				B2A000000000000000000208 /* PressStart2P-Regular.ttf */,
 			);
 			path = JitterJuice;
 			sourceTree = "<group>";
@@ -127,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2A000000000000000000107 /* Assets.xcassets in Resources */,
+				B2A000000000000000000108 /* PressStart2P-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +156,9 @@
 				B2A000000000000000000104 /* MouseJiggler.swift in Sources */,
 				B2A000000000000000000105 /* PowerAssertionHolder.swift in Sources */,
 				B2A000000000000000000106 /* AccessibilityPrompt.swift in Sources */,
+				B2A000000000000000000109 /* PixelTheme.swift in Sources */,
+				B2A00000000000000000010A /* AppTheme.swift in Sources */,
+				B2A00000000000000000010B /* ThemeColorUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
