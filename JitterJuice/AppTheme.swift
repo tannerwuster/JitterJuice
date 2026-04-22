@@ -11,6 +11,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     case treehugger
     case pride
     case hailStorm
+    case bladeRunner
     case custom
 
     var id: String { rawValue }
@@ -26,6 +27,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
         case .treehugger: return "Treehugger Juice"
         case .pride: return "Pride Juice"
         case .hailStorm: return "Hail Storm Juice"
+        case .bladeRunner: return "Blade Runner Juice"
         case .custom: return "Custom Juice"
         }
     }
@@ -336,6 +338,38 @@ struct ThemePalette {
                 helpGlyph: silver,
                 buttonLabelOnAccent: Color(white: 0.06),
                 tooltipShadow: Color.black.opacity(0.55),
+                usePixelFont: true,
+                useLightningToggle: true,
+                useSparkles: true,
+                usePixelHelpBadge: true,
+                usePixelChrome: true,
+                preferredColorScheme: .dark
+            )
+
+        case .bladeRunner:
+            let voidNavy = Color(red: 10 / 255, green: 13 / 255, blue: 22 / 255)
+            let midnight = Color(red: 17 / 255, green: 24 / 255, blue: 39 / 255)
+            let gunmetal = Color(red: 31 / 255, green: 41 / 255, blue: 55 / 255)
+            let cyberCyan = Color(red: 34 / 255, green: 211 / 255, blue: 255 / 255)
+            let electricCyan = Color(red: 0 / 255, green: 207 / 255, blue: 255 / 255)
+            let neonPink = Color(red: 255 / 255, green: 79 / 255, blue: 163 / 255)
+            let hotMagenta = Color(red: 233 / 255, green: 60 / 255, blue: 172 / 255)
+            return ThemePalette(
+                theme: theme,
+                backgroundDeep: voidNavy,
+                backgroundPanel: midnight,
+                accent: cyberCyan,
+                accentSecondary: neonPink,
+                textPrimary: Color(red: 0.91, green: 0.98, blue: 1.0),
+                textMuted: Color(red: 0.55, green: 0.65, blue: 0.72),
+                border: cyberCyan,
+                toggleOnFill: cyberCyan,
+                toggleOffFill: voidNavy,
+                helpBadgeFill: gunmetal,
+                helpBadgeStroke: hotMagenta,
+                helpGlyph: electricCyan,
+                buttonLabelOnAccent: voidNavy,
+                tooltipShadow: Color(red: 0, green: 0.4, blue: 0.55).opacity(0.45),
                 usePixelFont: true,
                 useLightningToggle: true,
                 useSparkles: true,

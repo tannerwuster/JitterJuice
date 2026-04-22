@@ -1,6 +1,10 @@
 import AppKit
 import SwiftUI
 
+private enum MenuBarIconSettingsPreview {
+    static let side: CGFloat = 58
+}
+
 struct MenuContentView: View {
     @ObservedObject var model: AppModel
     @State private var showSettings = false
@@ -180,6 +184,8 @@ struct MenuContentView: View {
                             macClassicThemePickRow(theme: .pride)
                             macClassicRowDivider
                             macClassicThemePickRow(theme: .hailStorm)
+                            macClassicRowDivider
+                            macClassicThemePickRow(theme: .bladeRunner)
                             macClassicRowDivider
                             macClassicThemePickRow(theme: .custom)
                             if model.appTheme == .custom {
@@ -391,7 +397,7 @@ struct MenuContentView: View {
             model.menuBarIconAppearance = appearance
         } label: {
             HStack(alignment: .center, spacing: 12) {
-                menuIconPreview(appearance: appearance, side: 36, palette: iconPalette)
+                menuIconPreview(appearance: appearance, side: MenuBarIconSettingsPreview.side, palette: iconPalette)
 
                 Text(title)
                     .font(.body.weight(.medium))
@@ -744,6 +750,8 @@ struct MenuContentView: View {
                             settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .hailStorm, palette: palette)
                             settingsRowDivider(palette: palette)
+                            themeChoiceRow(theme: .bladeRunner, palette: palette)
+                            settingsRowDivider(palette: palette)
                             themeChoiceRow(theme: .custom, palette: palette)
                             if model.appTheme == .custom {
                                 settingsRowDivider(palette: palette)
@@ -1083,9 +1091,9 @@ private struct IconChoiceBurstRow: View {
             burstKey &+= 1
         } label: {
             HStack(alignment: .center, spacing: 12) {
-                Image(nsImage: MenuBarIcon.nsImage(forHeight: 36, appearance: appearance, palette: palette))
+                Image(nsImage: MenuBarIcon.nsImage(forHeight: MenuBarIconSettingsPreview.side, appearance: appearance, palette: palette))
                     .interpolation(.none)
-                    .frame(width: 36, height: 36)
+                    .frame(width: MenuBarIconSettingsPreview.side, height: MenuBarIconSettingsPreview.side)
 
                 Text(palette.usePixelFont ? title.uppercased() : title)
                     .font(palette.bodyFont(size: palette.usePixelFont ? 9 : 13))

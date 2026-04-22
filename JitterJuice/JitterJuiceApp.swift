@@ -54,6 +54,7 @@ enum MenuBarIcon {
         case .treehugger: return "treehuggerjuiceicon"
         case .pride: return "pridejuiceicon"
         case .hailStorm: return "hailstormjuiceicon"
+        case .bladeRunner: return "bladerunnericon"
         default: return nil
         }
     }
@@ -142,7 +143,7 @@ enum MenuBarIcon {
                 recolorThemeMatched(rep: rep, width: pxW, height: pxH, palette: palette)
             }
             switch palette.theme {
-            case .eightBit, .macOS, .donny, .treehugger, .pride, .hailStorm, .custom:
+            case .eightBit, .macOS, .donny, .treehugger, .pride, .hailStorm, .bladeRunner, .custom:
                 break
             case .dracula:
                 drawDraculaFangs(rep: rep, width: pxW, height: pxH, palette: palette)
