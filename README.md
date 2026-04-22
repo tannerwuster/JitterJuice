@@ -60,4 +60,4 @@ open .derivedData/Build/Products/Debug/JitterJuice.app
 | File | Role |
 |------|------|
 | `jitterjuiceicon.png` | Menu bar source → `JitterJuiceMenuBar` in the asset catalog |
-| `jitterjuicelogo.png` | README / marketing |
+| `jitterjuicelogo.png` | README |
