@@ -1,4 +1,4 @@
-# JitterJuice · v1.0
+# JitterJuice · v1.1
 
 ![JitterJuice logo](Artwork/MenuBar/jitterjuicelogo.png)
 
@@ -21,7 +21,7 @@ Open **Settings** (gear) for idle-only jiggle, nudge distance, menu bar icon sty
 
 ![JitterJuice settings and Juice themes](Artwork/README/readme-settings-appearance.png)
 
-**Juice** themes reskin the retro menu and menu bar art so you can match your vibe—classic Jitter purple, Dracula, Moon, Deadly, Apple system style, Donny, Treehugger, Pride, Hail Storm (pixel rain), or your own colors under **Custom Juice**.
+**Juice** themes reskin the retro menu and menu bar art so you can match your vibe—classic Jitter purple, Dracula, Moon, Deadly, Apple system style, Donny, Treehugger, Pride, Hail Storm (pixel rain), Blade Runner (neon cyberpunk), or your own colors under **Custom Juice**.
 
 ---
 
@@ -29,7 +29,7 @@ Open **Settings** (gear) for idle-only jiggle, nudge distance, menu bar icon sty
 
 | Version | macOS |
 |--------:|--------|
-| **1.0** | [**Latest release** (`.dmg`)](https://github.com/tannerwuster/JitterJuice/releases/latest) |
+| **1.1** | [**Latest release** (`.dmg`)](https://github.com/tannerwuster/JitterJuice/releases/latest) |
 
 Download the **`.dmg`** from the release, **double-click** to mount it, then drag **JitterJuice.app** into **Applications** (the disk image has a shortcut there). Eject when finished. If there’s nothing to download yet, attach a **`.dmg`** on [Releases](https://github.com/tannerwuster/JitterJuice/releases) first.
 
@@ -54,9 +54,9 @@ The *fancy* fix for everyone else is **Developer ID signing + notarization** (pa
 
 1. **Xcode:** Product → Archive → Distribute App → **Copy App** (or export **`JitterJuice.app`** from a **Release** build).
 2. **DMG:** Put **`JitterJuice.app`** in a folder, add `ln -s /Applications Applications`, then run  
-   `hdiutil create -volname "JitterJuice" -srcfolder <that-folder> -ov -format UDZO -fs HFS+ JitterJuice-1.0.dmg`  
+   `hdiutil create -volname "JitterJuice" -srcfolder <that-folder> -ov -format UDZO -fs HFS+ JitterJuice-1.1.dmg`  
    (bump the filename when the version changes).
-3. Upload the **`.dmg`** on GitHub **Releases** with tag **`v1.0.0`** (or match the version in the table above).
+3. Upload the **`.dmg`** on GitHub **Releases** with tag **`v1.1.0`** (or match the version in the table above).
 4. Update this README’s version in the title and table when you cut a new release.
 
 </details>
@@ -99,6 +99,7 @@ Bundled images live in **`JitterJuice/Assets.xcassets`** (e.g. `MenuBarIcons/`).
 | <img src="Artwork/MenuBar/treehuggerjuiceicon.png" width="40" alt="Treehugger Juice" /> | `Artwork/MenuBar/treehuggerjuiceicon.png` | Treehugger Juice → `treehuggerjuiceicon.imageset` |
 | <img src="Artwork/MenuBar/pridejuiceicon.png" width="40" alt="Pride Juice" /> | `Artwork/MenuBar/pridejuiceicon.png` | Pride Juice → `pridejuiceicon.imageset` |
 | <img src="Artwork/MenuBar/hailstormjuiceicon.png" width="40" alt="Hail Storm Juice" /> | `Artwork/MenuBar/hailstormjuiceicon.png` | Hail Storm Juice → `hailstormjuiceicon.imageset` |
+| <img src="Artwork/MenuBar/bladerunnericon.png" width="40" alt="Blade Runner Juice" /> | `Artwork/MenuBar/bladerunnericon.png` | Blade Runner Juice → `bladerunnericon.imageset` |
 | <img src="Artwork/MenuBar/jitterjuiceicon.png" width="40" alt="App icon" /> | `Artwork/MenuBar/jitterjuiceicon.png` | App icon source → `AppIcon.appiconset` |
 | <img src="Artwork/MenuBar/jitterjuicelogo.png" width="120" alt="JitterJuice logo art" /> | `Artwork/MenuBar/jitterjuicelogo.png` | Marketing / README |
 | <img src="Artwork/README/readme-main-menu.png" width="100" alt="Main menu screenshot" /> | `Artwork/README/readme-main-menu.png` | README screenshot (main menu, full frame, transparent mat) |
