@@ -42,6 +42,29 @@ enum MenuBarIconAppearance: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum JiggleMode: String, CaseIterable, Identifiable {
+    case circle360
+    case upDown
+    
+    var id: String { rawValue }
+    
+    var displayName: String {
+        switch self {
+        case .circle360: return "360°"
+        case .upDown: return "Up/down"
+        }
+    }
+
+    var systemImageName: String {
+        switch self {
+        case .circle360:
+            return "arrow.triangle.2.circlepath"
+        case .upDown:
+            return "arrow.up.and.down"
+        }
+    }
+}
+
 final class AppModel: ObservableObject {
     static let defaultCustomMainHex = "24133F"
     static let defaultCustomAccentHex = "FFE938"
@@ -54,6 +77,7 @@ final class AppModel: ObservableObject {
         static let idleOnly = "jiggleWhenIdleOnly"
         static let idleThreshold = "jiggleIdleThresholdSeconds"
         static let nudgePixels = "nudgePixels"
+        static let jiggleMode = "jiggleMode"
         static let appTheme = "appTheme"
         static let customMainHex = "customThemeMainHex"
         static let customAccentHex = "customThemeAccentHex"
@@ -204,6 +228,13 @@ final class AppModel: ObservableObject {
             syncJiggle()
         }
     }
+    
+    @Published var jiggleMode: JiggleMode {
+        didSet {
+            UserDefaults.standard.set(jiggleMode.rawValue, forKey: Keys.jiggleMode)
+            syncJiggle()
+        }
+    }
 
     @Published var showAccessibilityHint = false
 
@@ -259,6 +290,19 @@ final class AppModel: ObservableObject {
         jiggleIdleThresholdSeconds = min(600, max(5, storedIdle))
         let storedNudge = defaults.object(forKey: Keys.nudgePixels) as? Int ?? 1
         nudgePixels = min(25, max(1, storedNudge))
+        if let raw = defaults.string(forKey: Keys.jiggleMode) {
+            // Migration: the old "180°" mode was removed; map it to 360°.
+            if raw == "circle180" {
+                jiggleMode = .circle360
+                defaults.set(JiggleMode.circle360.rawValue, forKey: Keys.jiggleMode)
+            } else if let mode = JiggleMode(rawValue: raw) {
+                jiggleMode = mode
+            } else {
+                jiggleMode = .circle360
+            }
+        } else {
+            jiggleMode = .circle360
+        }
         if let raw = defaults.string(forKey: Keys.iconAppearance),
            let mode = MenuBarIconAppearance(rawValue: raw) {
             menuBarIconAppearance = mode
@@ -328,6 +372,13 @@ final class AppModel: ObservableObject {
         }
         jiggleEnabled = enabled
         return true
+    }
+    
+    /// Re-check the OS accessibility permission and hide any stale prompt state.
+    func refreshAccessibilityTrust() {
+        if showAccessibilityHint, AccessibilityPrompt.isTrusted {
+            showAccessibilityHint = false
+        }
     }
 
     func applyIntervalFromStepper(_ value: Int) {
@@ -449,6 +500,7 @@ final class AppModel: ObservableObject {
             jiggleEnabled,
             intervalSeconds: TimeInterval(jiggleIntervalSeconds),
             nudgePixels: CGFloat(nudgePixels),
+            jiggleMode: jiggleMode,
             jiggleWhenIdleOnly: jiggleWhenIdleOnly,
             idleThresholdSeconds: TimeInterval(jiggleIdleThresholdSeconds)
         )

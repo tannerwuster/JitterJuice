@@ -10,6 +10,16 @@ struct MenuContentView: View {
     @State private var showSettings = false
     /// Frames of UI “boxes” in `jjMenuRain` space; used to block rain and draw edge trickles (Hail Storm).
     @State private var rainOccluderRects: [CGRect] = []
+    @State private var appearanceExpanded = false
+    /// Theme to pin at the top while Settings is open (prevents list jump while previewing).
+    @State private var appearancePinnedTheme: AppTheme?
+    
+    /// Settings should never grow beyond the visible screen height (keeps footer reachable on small displays).
+    private var settingsScrollMaxHeight: CGFloat {
+        let screenH = NSScreen.main?.visibleFrame.height ?? 900
+        // Keep the Settings list comfortable on large screens, but always reachable on small ones.
+        return max(260, min(680, screenH - 220))
+    }
 
     var body: some View {
         let palette = ThemePalette.palette(for: model.appTheme, model: model)
@@ -20,7 +30,27 @@ struct MenuContentView: View {
                 retroChrome(palette: palette)
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
+        // In the main panel we want a tight menu; in Settings we must allow vertical compression + scrolling.
+        .fixedSize(horizontal: false, vertical: !showSettings)
+        .onChange(of: showSettings) { newValue in
+            if newValue {
+                appearancePinnedTheme = model.appTheme
+                appearanceExpanded = false
+            } else {
+                appearancePinnedTheme = nil
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            model.refreshAccessibilityTrust()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willResignActiveNotification)) { _ in
+            // If the menu window is dismissed, always reopen to the main panel next time.
+            showSettings = false
+        }
+        .onDisappear {
+            // Defensive: if the MenuBarExtra window is closed, reset to main panel.
+            showSettings = false
+        }
     }
 
     @ViewBuilder
@@ -111,6 +141,17 @@ struct MenuContentView: View {
                 }
                 .padding(.leading, 22)
                 .transition(.opacity.combined(with: .move(edge: .top)))
+
+                Picker("Jiggle mode", selection: $model.jiggleMode) {
+                    ForEach(JiggleMode.allCases) { mode in
+                        Label(mode.displayName, systemImage: mode.systemImageName)
+                            .labelStyle(.iconOnly)
+                            .tag(mode)
+                    }
+                }
+                .pickerStyle(.menu)
+                .padding(.leading, 22)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
             Toggle(isOn: $model.stayAwakeEnabled) {
@@ -155,7 +196,8 @@ struct MenuContentView: View {
     }
 
     private var macClassicSettingsPanel: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        let pinnedTheme = appearancePinnedTheme ?? model.appTheme
+        return VStack(alignment: .leading, spacing: 0) {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Settings")
@@ -164,33 +206,40 @@ struct MenuContentView: View {
                     macClassicSectionDivider
 
                     VStack(alignment: .leading, spacing: 12) {
-                        macClassicSettingsSectionTitle("Appearance")
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.15)) { appearanceExpanded.toggle() }
+                        } label: {
+                            HStack(spacing: 8) {
+                                macClassicSettingsSectionTitle("Appearance")
+                                Spacer(minLength: 8)
+                                Image(systemName: appearanceExpanded ? "chevron.down" : "chevron.right")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
 
                         VStack(alignment: .leading, spacing: 0) {
-                            macClassicThemePickRow(theme: .eightBit)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .dracula)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .light)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .dark)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .macOS)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .donny)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .treehugger)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .pride)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .hailStorm)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .bladeRunner)
-                            macClassicRowDivider
-                            macClassicThemePickRow(theme: .custom)
-                            if model.appTheme == .custom {
+                            // Always show the currently selected theme pinned at the top.
+                            macClassicThemePickRow(theme: pinnedTheme)
+                            if pinnedTheme == .custom {
                                 macClassicRowDivider
                                 macClassicCustomThemeEditors
+                            }
+
+                            if appearanceExpanded {
+                                let all: [AppTheme] = [.eightBit, .dracula, .light, .dark, .macOS, .donny, .treehugger, .pride, .hailStorm, .bladeRunner, .custom]
+                                let remaining = all.filter { $0 != pinnedTheme }
+                                if !remaining.isEmpty {
+                                    macClassicRowDivider
+                                }
+                                ForEach(remaining) { t in
+                                    macClassicThemePickRow(theme: t)
+                                    if t != remaining.last {
+                                        macClassicRowDivider
+                                    }
+                                }
                             }
                         }
                         .padding(12)
@@ -199,6 +248,7 @@ struct MenuContentView: View {
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .fill(.quaternary.opacity(0.22))
                         )
+                        .animation(.easeInOut(duration: 0.15), value: appearanceExpanded)
                     }
 
                     macClassicSectionDivider
@@ -256,7 +306,7 @@ struct MenuContentView: View {
                 }
                 .padding(.bottom, 12)
             }
-            .frame(minHeight: 520, maxHeight: 1040)
+            .frame(maxHeight: settingsScrollMaxHeight)
 
             Divider()
 
@@ -474,6 +524,28 @@ struct MenuContentView: View {
                     Text("Every \(model.jiggleIntervalSeconds) sec")
                         .font(palette.bodyFont(size: palette.usePixelFont ? 8 : 12))
                         .foregroundStyle(palette.accentSecondary)
+                }
+                .padding(.leading, palette.useLightningToggle ? 32 : 28)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 2)
+                .jjRainOccluder(palette.showsMenuPixelRain)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+
+                HStack {
+                    Text(palette.usePixelFont ? "MODE" : "Mode")
+                        .font(palette.bodyFont(size: palette.usePixelFont ? 8 : 12))
+                        .foregroundStyle(palette.textMuted)
+                    Spacer(minLength: 8)
+                    Picker("", selection: $model.jiggleMode) {
+                        ForEach(JiggleMode.allCases) { mode in
+                            Label(mode.displayName, systemImage: mode.systemImageName)
+                                .labelStyle(.iconOnly)
+                                .tag(mode)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .font(palette.bodyFont(size: palette.usePixelFont ? 8 : 12))
                 }
                 .padding(.leading, palette.useLightningToggle ? 32 : 28)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -717,7 +789,8 @@ struct MenuContentView: View {
     }
 
     private func settingsPanel(palette: ThemePalette) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        let pinnedTheme = appearancePinnedTheme ?? model.appTheme
+        return VStack(alignment: .leading, spacing: 0) {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     Text(palette.usePixelFont ? "SETTINGS" : "Settings")
@@ -730,33 +803,40 @@ struct MenuContentView: View {
                     settingsSectionDivider(palette: palette)
 
                     VStack(alignment: .leading, spacing: 12) {
-                        settingsSectionTitle("Appearance", palette: palette)
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.15)) { appearanceExpanded.toggle() }
+                        } label: {
+                            HStack(spacing: 10) {
+                                settingsSectionTitle("Appearance", palette: palette)
+                                Spacer(minLength: 8)
+                                Image(systemName: appearanceExpanded ? "chevron.down" : "chevron.right")
+                                    .font(.system(size: palette.usePixelFont ? 10 : 12, weight: .semibold))
+                                    .foregroundStyle(palette.textMuted)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
 
                         VStack(alignment: .leading, spacing: 0) {
-                            themeChoiceRow(theme: .eightBit, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .dracula, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .light, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .dark, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .macOS, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .donny, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .treehugger, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .pride, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .hailStorm, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .bladeRunner, palette: palette)
-                            settingsRowDivider(palette: palette)
-                            themeChoiceRow(theme: .custom, palette: palette)
-                            if model.appTheme == .custom {
+                            // Always show the selected theme pinned at the top.
+                            themeChoiceRow(theme: pinnedTheme, palette: palette)
+                            if pinnedTheme == .custom {
                                 settingsRowDivider(palette: palette)
                                 retroCustomThemeEditors(palette: palette)
+                            }
+
+                            if appearanceExpanded {
+                                let all: [AppTheme] = [.eightBit, .dracula, .light, .dark, .macOS, .donny, .treehugger, .pride, .hailStorm, .bladeRunner, .custom]
+                                let remaining = all.filter { $0 != pinnedTheme }
+                                if !remaining.isEmpty {
+                                    settingsRowDivider(palette: palette)
+                                }
+                                ForEach(remaining) { t in
+                                    themeChoiceRow(theme: t, palette: palette)
+                                    if t != remaining.last {
+                                        settingsRowDivider(palette: palette)
+                                    }
+                                }
                             }
                         }
                         .padding(12)
@@ -772,6 +852,7 @@ struct MenuContentView: View {
                                 }
                             }
                         )
+                        .animation(.easeInOut(duration: 0.15), value: appearanceExpanded)
                     }
 
                     settingsSectionDivider(palette: palette)
@@ -846,7 +927,7 @@ struct MenuContentView: View {
                 }
                 .padding(.bottom, 12)
             }
-            .frame(minHeight: 520, maxHeight: 1040)
+            .frame(maxHeight: settingsScrollMaxHeight)
 
             themedDivider(palette: palette)
 

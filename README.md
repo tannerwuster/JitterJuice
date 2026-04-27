@@ -80,6 +80,18 @@ xcodebuild -project JitterJuice.xcodeproj -scheme JitterJuice -configuration Deb
 open .derivedData/Build/Products/Debug/JitterJuice.app
 ```
 
+Or, from the repo root:
+
+```bash
+make ipod
+```
+
+If `xcodebuild` errors with a missing Xcode plug-in/framework (common after an Xcode update), run:
+
+```bash
+xcodebuild -runFirstLaunch
+```
+
 ## Permissions
 
 **Accessibility** (mouse nudges): **System Settings → Privacy & Security → Accessibility** → enable JitterJuice.
