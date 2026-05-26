@@ -18,10 +18,13 @@
 		B2A000000000000000000109 /* PixelTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A000000000000000000209 /* PixelTheme.swift */; };
 		B2A00000000000000000010A /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020A /* AppTheme.swift */; };
 		B2A00000000000000000010B /* ThemeColorUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020B /* ThemeColorUtils.swift */; };
+		B2A00000000000000000010C /* StayAwakeScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020C /* StayAwakeScheduleTests.swift */; };
+		B2A00000000000000000010D /* SettingsClampingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A00000000000000000020D /* SettingsClampingTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B2A000000000000000000301 /* JitterJuice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JitterJuice.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2A000000000000000000302 /* JitterJuiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JitterJuiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A000000000000000000201 /* JitterJuiceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JitterJuiceApp.swift; sourceTree = "<group>"; };
 		B2A000000000000000000202 /* MenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuContentView.swift; sourceTree = "<group>"; };
 		B2A000000000000000000203 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -33,6 +36,8 @@
 		B2A000000000000000000209 /* PixelTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelTheme.swift; sourceTree = "<group>"; };
 		B2A00000000000000000020A /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		B2A00000000000000000020B /* ThemeColorUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColorUtils.swift; sourceTree = "<group>"; };
+		B2A00000000000000000020C /* StayAwakeScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StayAwakeScheduleTests.swift; sourceTree = "<group>"; };
+		B2A00000000000000000020D /* SettingsClampingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsClampingTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,13 +48,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2A000000000000000000402 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		B2A000000000000000000C01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2A000000000000000000A01 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B2A000000000000000000601;
+			remoteInfo = JitterJuice;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXGroup section */
 		B2A000000000000000000501 = {
 			isa = PBXGroup;
 			children = (
 				B2A000000000000000000502 /* JitterJuice */,
+				B2A000000000000000000504 /* JitterJuiceTests */,
 				B2A000000000000000000503 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,10 +95,20 @@
 			path = JitterJuice;
 			sourceTree = "<group>";
 		};
+		B2A000000000000000000504 /* JitterJuiceTests */ = {
+			isa = PBXGroup;
+			children = (
+				B2A00000000000000000020C /* StayAwakeScheduleTests.swift */,
+				B2A00000000000000000020D /* SettingsClampingTests.swift */,
+			);
+			path = JitterJuiceTests;
+			sourceTree = "<group>";
+		};
 		B2A000000000000000000503 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				B2A000000000000000000301 /* JitterJuice.app */,
+				B2A000000000000000000302 /* JitterJuiceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +133,23 @@
 			productReference = B2A000000000000000000301 /* JitterJuice.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B2A000000000000000000602 /* JitterJuiceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2A000000000000000000903 /* Build configuration list for PBXNativeTarget "JitterJuiceTests" */;
+			buildPhases = (
+				B2A000000000000000000702 /* Sources */,
+				B2A000000000000000000402 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2A000000000000000000D01 /* PBXTargetDependency */,
+			);
+			name = JitterJuiceTests;
+			productName = JitterJuiceTests;
+			productReference = B2A000000000000000000302 /* JitterJuiceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -112,6 +162,10 @@
 				TargetAttributes = {
 					B2A000000000000000000601 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					B2A000000000000000000602 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = B2A000000000000000000601;
 					};
 				};
 			};
@@ -129,6 +183,7 @@
 			projectRoot = "";
 			targets = (
 				B2A000000000000000000601 /* JitterJuice */,
+				B2A000000000000000000602 /* JitterJuiceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -162,7 +217,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2A000000000000000000702 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2A00000000000000000010C /* StayAwakeScheduleTests.swift in Sources */,
+				B2A00000000000000000010D /* SettingsClampingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B2A000000000000000000D01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B2A000000000000000000601 /* JitterJuice */;
+			targetProxy = B2A000000000000000000C01 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B2A000000000000000000B01 /* Debug */ = {
@@ -337,6 +409,40 @@
 			};
 			name = Release;
 		};
+		B2A000000000000000000B05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jitterjuice.JitterJuiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JitterJuice.app/Contents/MacOS/JitterJuice";
+			};
+			name = Debug;
+		};
+		B2A000000000000000000B06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jitterjuice.JitterJuiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JitterJuice.app/Contents/MacOS/JitterJuice";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -354,6 +460,15 @@
 			buildConfigurations = (
 				B2A000000000000000000B03 /* Debug */,
 				B2A000000000000000000B04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2A000000000000000000903 /* Build configuration list for PBXNativeTarget "JitterJuiceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B2A000000000000000000B05 /* Debug */,
+				B2A000000000000000000B06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

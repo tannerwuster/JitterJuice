@@ -72,6 +72,8 @@ The *fancy* fix for everyone else is **Developer ID signing + notarization** (pa
 
 Repo: [github.com/tannerwuster/JitterJuice](https://github.com/tannerwuster/JitterJuice)
 
+**Contributors:** see [CONTRIBUTING.md](CONTRIBUTING.md) for build, test, and release workflows.
+
 Planned work: see [ROADMAP.md](ROADMAP.md) and [open issues](https://github.com/tannerwuster/JitterJuice/issues).
 
 ```bash

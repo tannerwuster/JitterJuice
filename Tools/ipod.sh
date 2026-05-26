@@ -6,7 +6,7 @@ DERIVED_DATA_PATH="${DERIVED_DATA_PATH:-"$ROOT_DIR/.derivedData"}"
 CONFIGURATION="${CONFIGURATION:-Debug}"
 
 APP_NAME="JitterJuice"
-APP_BUNDLE_ID="${APP_BUNDLE_ID:-com.tannerwuster.JitterJuice}"
+APP_BUNDLE_ID="${APP_BUNDLE_ID:-com.jitterjuice.JitterJuice}"
 APP_PATH="$DERIVED_DATA_PATH/Build/Products/$CONFIGURATION/$APP_NAME.app"
 
 echo "Stopping $APP_NAME (if running)…"

@@ -4,7 +4,6 @@ import Foundation
 
 /// Nudges the cursor by a few points and back so the system idle timer resets.
 final class MouseJiggler {
-    private static let buildTag = "motionTimer-v1"
     private var timer: DispatchSourceTimer?
     private let queue = DispatchQueue(label: "com.jitterjuice.mousejiggler", qos: .utility)
     private var motionTimer: DispatchSourceTimer?
@@ -78,36 +77,12 @@ final class MouseJiggler {
         let rDesiredBase = max(4, nudgePixels)
         let clampFrame = clampFrameForPoint(p)
 
-        // #region agent log
-        jjLog(
-            hypothesisId: "H1",
-            location: "MouseJiggler.swift:nudge:start",
-            message: "nudge start",
-            data: [
-                "buildTag": Self.buildTag,
-                "mode": jiggleMode.rawValue,
-                "p": ["x": p.x, "y": p.y],
-                "nudgePixels": Double(nudgePixels),
-                "rDesired": Double(rDesiredBase),
-                "frame": ["minX": clampFrame.minX, "minY": clampFrame.minY, "maxX": clampFrame.maxX, "maxY": clampFrame.maxY],
-            ]
-        )
-        // #endregion
-
         switch jiggleMode {
         case .circle360:
             // Full circle around the point, then return.
             // Make 360° mode visibly "wide" without affecting Up/Down amplitude.
             let desired = max(12, rDesiredBase * 4)
             let r = circleRadius360(around: p, desired: desired, frame: clampFrame)
-            // #region agent log
-            jjLog(
-                hypothesisId: "H2",
-                location: "MouseJiggler.swift:nudge:circle360",
-                message: "circle360 radius",
-                data: ["r": Double(r), "desired": Double(desired)]
-            )
-            // #endregion
             startArcMotion(
                 kind: .circle360,
                 center: p,
@@ -117,17 +92,6 @@ final class MouseJiggler {
 
         case .upDown:
             let up = CGPoint(x: p.x, y: p.y + rDesiredBase)
-            // #region agent log
-            jjLog(
-                hypothesisId: "H4",
-                location: "MouseJiggler.swift:nudge:upDown",
-                message: "upDown",
-                data: [
-                    "up": ["x": up.x, "y": up.y],
-                    "upClamped": ["x": clampToScreen(up, frame: clampFrame).x, "y": clampToScreen(up, frame: clampFrame).y],
-                ]
-            )
-            // #endregion
             postMouseMoved(to: clampToScreen(up, frame: clampFrame))
             postMouseMoved(to: clampToScreen(p, frame: clampFrame))
         }
@@ -177,23 +141,10 @@ final class MouseJiggler {
         let relY = p.y - frame.minY
         let px = (relX / frame.width) * bounds.width
         let pyFromBottom = (relY / frame.height) * bounds.height
-        let q = CGPoint(
+        return CGPoint(
             x: bounds.origin.x + px,
             y: bounds.origin.y + (bounds.height - pyFromBottom)
         )
-        // #region agent log
-        jjLog(
-            hypothesisId: "H9",
-            location: "MouseJiggler.swift:quartzPoint",
-            message: "convert appkit->quartz",
-            data: [
-                "displayID": UInt64(displayID),
-                "in": ["x": p.x, "y": p.y],
-                "out": ["x": q.x, "y": q.y],
-            ]
-        )
-        // #endregion
-        return q
     }
 
     private func quartzPointLegacyFlip(_ p: CGPoint) -> CGPoint {
@@ -233,17 +184,7 @@ final class MouseJiggler {
 
     private func startArcMotion(kind: ArcMotionKind, center: CGPoint, radius: CGFloat, frame: CGRect) {
         // If a motion is already running, skip starting another (prevents stacking).
-        guard !motionInFlight else {
-            // #region agent log
-            jjLog(
-                hypothesisId: "H5",
-                location: "MouseJiggler.swift:motion:skip",
-                message: "motion already in flight",
-                data: ["kind": kind.rawValue]
-            )
-            // #endregion
-            return
-        }
+        guard !motionInFlight else { return }
         motionInFlight = true
         motionTimer?.cancel()
         motionTimer = nil
@@ -254,21 +195,6 @@ final class MouseJiggler {
         let totalAngle: CGFloat = (kind == .circle360) ? (.pi * 2) : .pi
         var i = 0
 
-        // #region agent log
-        jjLog(
-            hypothesisId: "H6",
-            location: "MouseJiggler.swift:motion:start",
-            message: "start motion timer",
-            data: [
-                "buildTag": Self.buildTag,
-                "kind": kind.rawValue,
-                "steps": steps,
-                "center": ["x": center.x, "y": center.y],
-                "radius": Double(radius),
-            ]
-        )
-        // #endregion
-
         let source = DispatchSource.makeTimerSource(queue: queue)
         source.schedule(deadline: .now(), repeating: .milliseconds(12), leeway: .milliseconds(2))
         source.setEventHandler { [weak self] in
@@ -277,14 +203,6 @@ final class MouseJiggler {
                 source.cancel()
                 self.motionInFlight = false
                 self.postMouseMoved(to: self.clampToScreen(center, frame: frame))
-                // #region agent log
-                self.jjLog(
-                    hypothesisId: "H6",
-                    location: "MouseJiggler.swift:motion:end",
-                    message: "motion ended",
-                    data: ["kind": kind.rawValue]
-                )
-                // #endregion
                 return
             }
             let t = CGFloat(i) / CGFloat(steps)
@@ -293,99 +211,12 @@ final class MouseJiggler {
             let dy = sin(a) * radius
             let pt = CGPoint(x: center.x + dx, y: center.y + dy)
             let clamped = self.clampToScreen(pt, frame: frame)
-
-            // #region agent log
-            // Measure real cursor movement (what the user sees).
-            if i == 0 || i == steps / 2 || i == steps {
-                let before = NSEvent.mouseLocation
-                self.jjLog(
-                    hypothesisId: "H8",
-                    location: "MouseJiggler.swift:motion:cursorBefore",
-                    message: "cursor before post",
-                    data: [
-                        "kind": kind.rawValue,
-                        "i": i,
-                        "cursor": ["x": before.x, "y": before.y],
-                        "center": ["x": center.x, "y": center.y],
-                    ]
-                )
-            }
-            // #endregion
-            if i <= 3 || i == steps / 2 || i == steps {
-                // #region agent log
-                self.jjLog(
-                    hypothesisId: "H7",
-                    location: "MouseJiggler.swift:motion:pt",
-                    message: "motion point",
-                    data: [
-                        "kind": kind.rawValue,
-                        "i": i,
-                        "pt": ["x": pt.x, "y": pt.y],
-                        "clamped": ["x": clamped.x, "y": clamped.y],
-                        "clampedChanged": (pt.x != clamped.x) || (pt.y != clamped.y),
-                        "delta": ["dx": clamped.x - center.x, "dy": clamped.y - center.y],
-                        "postedAtCenter": false,
-                    ]
-                )
-                // #endregion
-            }
-            // Actually move the cursor along the arc so 180° vs 360° are visibly different.
             self.postMouseMoved(to: clamped)
-
-            // #region agent log
-            if i == 0 || i == steps / 2 || i == steps {
-                let after = NSEvent.mouseLocation
-                self.jjLog(
-                    hypothesisId: "H8",
-                    location: "MouseJiggler.swift:motion:cursorAfter",
-                    message: "cursor after post",
-                    data: [
-                        "kind": kind.rawValue,
-                        "i": i,
-                        "cursor": ["x": after.x, "y": after.y],
-                        "center": ["x": center.x, "y": center.y],
-                        "moved": ["dx": after.x - center.x, "dy": after.y - center.y],
-                    ]
-                )
-            }
-            // #endregion
             i += 1
         }
         source.resume()
         motionTimer = source
     }
-
-    // #region agent log
-    private func jjLog(hypothesisId: String, location: String, message: String, data: [String: Any]) {
-        let payload: [String: Any] = [
-            "sessionId": "717e91",
-            "runId": "pre-fix",
-            "hypothesisId": hypothesisId,
-            "location": location,
-            "message": message,
-            "data": data,
-            "timestamp": Int(Date().timeIntervalSince1970 * 1000),
-        ]
-        guard let line = (try? JSONSerialization.data(withJSONObject: payload)) else { return }
-        let url = URL(fileURLWithPath: "/Users/tannerwuster/Documents/CodingProjects/JitterJuice/.cursor/debug-717e91.log")
-        if let h = try? FileHandle(forWritingTo: url) {
-            try? h.seekToEnd()
-            try? h.write(contentsOf: line)
-            try? h.write(contentsOf: Data([0x0A]))
-            try? h.close()
-        } else {
-            // First log of the session creates the file.
-            try? line.write(to: url, options: .atomic)
-            try? FileHandle(forWritingTo: url).close()
-            // Ensure newline for NDJSON readers.
-            if let h2 = try? FileHandle(forWritingTo: url) {
-                try? h2.seekToEnd()
-                try? h2.write(contentsOf: Data([0x0A]))
-                try? h2.close()
-            }
-        }
-    }
-    // #endregion
 
     deinit {
         timer?.cancel()
