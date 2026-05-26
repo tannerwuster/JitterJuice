@@ -25,6 +25,9 @@ final class MouseJiggler {
     ) {
         timer?.cancel()
         timer = nil
+        motionTimer?.cancel()
+        motionTimer = nil
+        motionInFlight = false
         guard enabled, intervalSeconds > 0 else { return }
 
         self.nudgePixels = max(1, nudgePixels)
@@ -154,24 +157,48 @@ final class MouseJiggler {
         event.post(tap: .cghidEventTap)
     }
 
+    /// `NSEvent.mouseLocation` is AppKit global space (origin bottom-left, y up). `CGEvent` positions use
+    /// Quartz global space per display (origin top-left of each display in pixel space). Mapping via
+    /// `max(NSScreen.frame.maxY) - y` is wrong on Retina / multi-display and skews motion (often vertical).
     private func quartzPoint(fromAppKit p: CGPoint) -> CGPoint {
-        // CGEvent cursor positions use a flipped global Y compared to NSEvent.mouseLocation on this app's setup.
-        // Evidence: observed jumps where y -> frame.maxY - y (see debug log H8).
-        let globalMaxY = NSScreen.screens.map(\.frame.maxY).max() ?? 0
-        let q = CGPoint(x: p.x, y: globalMaxY - p.y)
+        let screens = NSScreen.screens
+        guard let screen = screens.first(where: { $0.frame.contains(p) }) ?? NSScreen.main,
+              let num = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
+        else {
+            return quartzPointLegacyFlip(p)
+        }
+        let displayID = CGDirectDisplayID(truncating: num)
+        let bounds = CGDisplayBounds(displayID)
+        let frame = screen.frame
+        guard frame.width > 0, frame.height > 0, bounds.width > 0, bounds.height > 0 else {
+            return quartzPointLegacyFlip(p)
+        }
+        let relX = p.x - frame.minX
+        let relY = p.y - frame.minY
+        let px = (relX / frame.width) * bounds.width
+        let pyFromBottom = (relY / frame.height) * bounds.height
+        let q = CGPoint(
+            x: bounds.origin.x + px,
+            y: bounds.origin.y + (bounds.height - pyFromBottom)
+        )
         // #region agent log
         jjLog(
             hypothesisId: "H9",
             location: "MouseJiggler.swift:quartzPoint",
             message: "convert appkit->quartz",
             data: [
-                "globalMaxY": globalMaxY,
+                "displayID": UInt64(displayID),
                 "in": ["x": p.x, "y": p.y],
                 "out": ["x": q.x, "y": q.y],
             ]
         )
         // #endregion
         return q
+    }
+
+    private func quartzPointLegacyFlip(_ p: CGPoint) -> CGPoint {
+        let globalMaxY = NSScreen.screens.map(\.frame.maxY).max() ?? 0
+        return CGPoint(x: p.x, y: globalMaxY - p.y)
     }
     
     private func clampFrameForPoint(_ point: CGPoint) -> CGRect {
@@ -221,7 +248,8 @@ final class MouseJiggler {
         motionTimer?.cancel()
         motionTimer = nil
 
-        let startAngle: CGFloat = .pi / 4
+        // Start on +X from center so motion doesn’t read as a vertical “nudge” before the loop.
+        let startAngle: CGFloat = 0
         let steps: Int = (kind == .circle360) ? 45 : 17
         let totalAngle: CGFloat = (kind == .circle360) ? (.pi * 2) : .pi
         var i = 0

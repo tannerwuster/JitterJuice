@@ -53,7 +53,12 @@ The *fancy* fix for everyone else is **Developer ID signing + notarization** (pa
 <summary><strong>Maintainers: ship a release</strong></summary>
 
 1. **Xcode:** Product → Archive → Distribute App → **Copy App** (or export **`JitterJuice.app`** from a **Release** build).
-2. **DMG:** Put **`JitterJuice.app`** in a folder, add `ln -s /Applications Applications`, then run  
+2. **DMG:** From the repo root, run **`Tools/make-dmg.sh`** so the image includes an **Applications** shortcut (required for the usual “drag app here” layout):
+   ```bash
+   chmod +x Tools/make-dmg.sh
+   Tools/make-dmg.sh /path/to/JitterJuice.app JitterJuice-1.1.dmg
+   ```
+   Or do it by hand: put **`JitterJuice.app`** in a folder, add `ln -s /Applications Applications`, then  
    `hdiutil create -volname "JitterJuice" -srcfolder <that-folder> -ov -format UDZO -fs HFS+ JitterJuice-1.1.dmg`  
    (bump the filename when the version changes).
 3. Upload the **`.dmg`** on GitHub **Releases** with tag **`v1.1.0`** (or match the version in the table above).
